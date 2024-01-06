@@ -2,6 +2,7 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -15,15 +16,16 @@ public class AddActivity : ASActivity, IASModel<AddActivity, AddActivityEntity, 
     /// <summary>
     ///     ActivityStreams type name for "Add" types.
     /// </summary>
+    [PublicAPI]
     public const string AddType = "Add";
     static string IASModel<AddActivity>.ASTypeName => AddType;
 
     /// <inheritdoc />
-    public AddActivity() => Entity = TypeMap.Extend<AddActivityEntity>();
+    public AddActivity() => Entity = TypeMap.Extend<AddActivity, AddActivityEntity>();
 
     /// <inheritdoc />
     public AddActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<AddActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<AddActivity, AddActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public AddActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -31,7 +33,7 @@ public class AddActivity : ASActivity, IASModel<AddActivity, AddActivityEntity, 
     /// <inheritdoc />
     [SetsRequiredMembers]
     public AddActivity(TypeMap typeMap, AddActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<AddActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<AddActivity, AddActivityEntity>();
 
     static AddActivity IASModel<AddActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -39,4 +41,4 @@ public class AddActivity : ASActivity, IASModel<AddActivity, AddActivityEntity, 
 }
 
 /// <inheritdoc cref="AddActivity" />
-public sealed class AddActivityEntity : ASEntity<AddActivity, AddActivityEntity> {}
+public sealed class AddActivityEntity : ASEntity<AddActivity, AddActivityEntity>;

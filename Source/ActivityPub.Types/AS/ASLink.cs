@@ -4,6 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using ActivityPub.Types.Util;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS;
 
@@ -20,15 +21,16 @@ public class ASLink : ASType, IASModel<ASLink, ASLinkEntity, ASType>
     /// <summary>
     ///     ActivityStreams type name for "Link" types.
     /// </summary>
+    [PublicAPI]
     public const string LinkType = "Link";
     static string IASModel<ASLink>.ASTypeName => LinkType;
 
     /// <inheritdoc />
-    public ASLink() => Entity = TypeMap.Extend<ASLinkEntity>();
+    public ASLink() => Entity = TypeMap.Extend<ASLink, ASLinkEntity>();
 
     /// <inheritdoc />
     public ASLink(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<ASLinkEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<ASLink, ASLinkEntity>(isExtending);
 
     /// <inheritdoc />
     public ASLink(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -37,7 +39,7 @@ public class ASLink : ASType, IASModel<ASLink, ASLinkEntity, ASType>
     [SetsRequiredMembers]
     public ASLink(TypeMap typeMap, ASLinkEntity? entity) : base(typeMap, null)
     {
-        Entity = entity ?? typeMap.AsEntity<ASLinkEntity>();
+        Entity = entity ?? typeMap.AsEntity<ASLink, ASLinkEntity>();
         HRef = Entity.HRef ?? throw new ArgumentException($"The provided entity is invalid - required {nameof(ASLinkEntity.HRef)} property is missing");
     }
 
@@ -153,7 +155,7 @@ public sealed class ASLinkEntity : ASEntity<ASLink, ASLinkEntity>
 
     /// <inheritdoc cref="ASLink.Rel" />
     [JsonPropertyName("rel")]
-    public HashSet<LinkRel> Rel { get; set; } = new();
+    public HashSet<LinkRel> Rel { get; set; } = [];
 
     /// <inheritdoc />
     public override bool RequiresObjectForm => HRefLang != null || Width != null || Height != null || Rel.Count != 0;

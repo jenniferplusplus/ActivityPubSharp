@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Object;
 
@@ -14,15 +15,16 @@ public class NoteObject : ASObject, IASModel<NoteObject, NoteObjectEntity, ASObj
     /// <summary>
     ///     ActivityStreams type name for "Note" types.
     /// </summary>
+    [PublicAPI]
     public const string NoteType = "Note";
     static string IASModel<NoteObject>.ASTypeName => NoteType;
 
     /// <inheritdoc />
-    public NoteObject() => Entity = TypeMap.Extend<NoteObjectEntity>();
+    public NoteObject() => Entity = TypeMap.Extend<NoteObject, NoteObjectEntity>();
 
     /// <inheritdoc />
     public NoteObject(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<NoteObjectEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<NoteObject, NoteObjectEntity>(isExtending);
 
     /// <inheritdoc />
     public NoteObject(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -30,7 +32,7 @@ public class NoteObject : ASObject, IASModel<NoteObject, NoteObjectEntity, ASObj
     /// <inheritdoc />
     [SetsRequiredMembers]
     public NoteObject(TypeMap typeMap, NoteObjectEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<NoteObjectEntity>();
+        => Entity = entity ?? typeMap.AsEntity<NoteObject, NoteObjectEntity>();
 
     static NoteObject IASModel<NoteObject>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -39,4 +41,4 @@ public class NoteObject : ASObject, IASModel<NoteObject, NoteObjectEntity, ASObj
 }
 
 /// <inheritdoc cref="NoteObject" />
-public sealed class NoteObjectEntity : ASEntity<NoteObject, NoteObjectEntity> {}
+public sealed class NoteObjectEntity : ASEntity<NoteObject, NoteObjectEntity>;

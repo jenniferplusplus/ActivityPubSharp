@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -14,15 +15,16 @@ public class InviteActivity : OfferActivity, IASModel<InviteActivity, InviteActi
     /// <summary>
     ///     ActivityStreams type name for "Invite" types.
     /// </summary>
+    [PublicAPI]
     public const string InviteType = "Invite";
     static string IASModel<InviteActivity>.ASTypeName => InviteType;
 
     /// <inheritdoc />
-    public InviteActivity() => Entity = TypeMap.Extend<InviteActivityEntity>();
+    public InviteActivity() => Entity = TypeMap.Extend<InviteActivity, InviteActivityEntity>();
 
     /// <inheritdoc />
     public InviteActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<InviteActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<InviteActivity, InviteActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public InviteActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -30,7 +32,7 @@ public class InviteActivity : OfferActivity, IASModel<InviteActivity, InviteActi
     /// <inheritdoc />
     [SetsRequiredMembers]
     public InviteActivity(TypeMap typeMap, InviteActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<InviteActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<InviteActivity, InviteActivityEntity>();
 
     static InviteActivity IASModel<InviteActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -38,4 +40,4 @@ public class InviteActivity : OfferActivity, IASModel<InviteActivity, InviteActi
 }
 
 /// <inheritdoc cref="InviteActivity" />
-public sealed class InviteActivityEntity : ASEntity<InviteActivity, InviteActivityEntity> {}
+public sealed class InviteActivityEntity : ASEntity<InviteActivity, InviteActivityEntity>;

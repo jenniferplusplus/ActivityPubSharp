@@ -8,7 +8,7 @@ using ActivityPub.Types.Util;
 namespace ActivityPub.Types.Conversion.Converters;
 
 /// <summary>
-///     Custom converter for the JSON-LD <code>@context</code> property.
+///     Custom JSON converter for the JSON-LD <code>@context</code> property.
 /// </summary>
 /// <remarks>
 ///     We need THREE FUCKING CONVERTERS for a minimum-viable implementation!
@@ -16,40 +16,36 @@ namespace ActivityPub.Types.Conversion.Converters;
 /// <seealso cref="JsonLDTermConverter" />
 /// <seealso cref="JsonLDContextObjectConverter" />
 /// <seealso href="https://www.w3.org/TR/json-ld11/#the-context" />
-internal class JsonLDContextConverter : JsonConverter<JsonLDContext>
+public class JsonLDContextConverter : JsonConverter<JsonLDContext>
 {
+    /// <inheritdoc />
     public override JsonLDContext? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        switch (reader.TokenType)
+        => reader.TokenType switch
         {
-            case JsonTokenType.Null:
-                return null;
-
-            case JsonTokenType.String:
-            case JsonTokenType.StartObject:
+            JsonTokenType.Null => null,
+            JsonTokenType.String => new JsonLDContext
             {
-                var context = ReadContext(ref reader, options);
-                return new JsonLDContext
-                {
-                    context
-                };
-            }
-
-            case JsonTokenType.StartArray:
+                ReadContext(ref reader, options)
+            },
+            JsonTokenType.StartObject => new JsonLDContext
             {
-                var context = new JsonLDContext();
-                while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
-                {
-                    var contextObj = ReadContext(ref reader, options);
-                    context.Add(contextObj);
-                }
-
-                return context;
-            }
-
-            default:
-                throw new JsonException($"Cannot deserialize {reader.TokenType} as @context field");
+                ReadContext(ref reader, options)
+            },
+            JsonTokenType.StartArray => ReadContextArray(ref reader, options),
+            _ => throw new JsonException($"Cannot deserialize {reader.TokenType} as @context field")
+        };
+    
+    private static JsonLDContext ReadContextArray(ref Utf8JsonReader reader, JsonSerializerOptions options)
+    {
+        var context = new JsonLDContext();
+        
+        while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+        {
+            var contextObj = ReadContext(ref reader, options);
+            context.Add(contextObj);
         }
+
+        return context;
     }
 
     private static JsonLDContextObject ReadContext(ref Utf8JsonReader reader, JsonSerializerOptions options)
@@ -61,19 +57,22 @@ internal class JsonLDContextConverter : JsonConverter<JsonLDContext>
         return context;
     }
 
+    /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, JsonLDContext value, JsonSerializerOptions options)
     {
-        if (value.Count == 1)
+        var contexts = value.LocalContexts.ToList();
+        if (contexts.Count == 1)
         {
-            var context = value.First();
+            var context = contexts.Single();
             JsonSerializer.Serialize(writer, context, options);
         }
         else
         {
             writer.WriteStartArray();
-            foreach (var context in value)
+            
+            foreach (var context in contexts)
                 JsonSerializer.Serialize(writer, context, options);
-
+            
             writer.WriteEndArray();
         }
     }

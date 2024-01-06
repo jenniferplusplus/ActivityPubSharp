@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -14,15 +15,16 @@ public class DislikeActivity : ASActivity, IASModel<DislikeActivity, DislikeActi
     /// <summary>
     ///     ActivityStreams type name for "Dislike" types.
     /// </summary>
+    [PublicAPI]
     public const string DislikeType = "Dislike";
     static string IASModel<DislikeActivity>.ASTypeName => DislikeType;
 
     /// <inheritdoc />
-    public DislikeActivity() => Entity = TypeMap.Extend<DislikeActivityEntity>();
+    public DislikeActivity() => Entity = TypeMap.Extend<DislikeActivity, DislikeActivityEntity>();
 
     /// <inheritdoc />
     public DislikeActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<DislikeActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<DislikeActivity, DislikeActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public DislikeActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -30,7 +32,7 @@ public class DislikeActivity : ASActivity, IASModel<DislikeActivity, DislikeActi
     /// <inheritdoc />
     [SetsRequiredMembers]
     public DislikeActivity(TypeMap typeMap, DislikeActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<DislikeActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<DislikeActivity, DislikeActivityEntity>();
 
     static DislikeActivity IASModel<DislikeActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -38,4 +40,4 @@ public class DislikeActivity : ASActivity, IASModel<DislikeActivity, DislikeActi
 }
 
 /// <inheritdoc cref="DislikeActivity" />
-public sealed class DislikeActivityEntity : ASEntity<DislikeActivity, DislikeActivityEntity> {}
+public sealed class DislikeActivityEntity : ASEntity<DislikeActivity, DislikeActivityEntity>;

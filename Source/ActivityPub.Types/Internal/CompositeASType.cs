@@ -1,17 +1,19 @@
 ﻿// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 // If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+using System.Collections;
+
 namespace ActivityPub.Types.Internal;
 
 /// <summary>
 ///     Represents the AS type name of a composite object.
 ///     More-specific subtypes will "shadow" (replace) more-generic base types. 
 /// </summary>
-internal class CompositeASType
+internal class CompositeASType : IEnumerable<string>
 {
-    private readonly HashSet<string> _allASTypes = new();
-    private readonly HashSet<string> _flatASTypes = new();
-    private readonly HashSet<string> _replacedASTypes = new();
+    private readonly HashSet<string> _allASTypes = [];
+    private readonly HashSet<string> _flatASTypes = [];
+    private readonly HashSet<string> _replacedASTypes = [];
 
     /// <summary>
     ///     AS type names that are represented by this object, excluding those that have been shadowed.
@@ -35,9 +37,8 @@ internal class CompositeASType
     public void Add(string type, string? replacedType = null)
     {
         // Add it to the superset.
-        // This doubles as a duplicate check to avoid extra set operations.
-        if (!_allASTypes.Add(type))
-            return;
+        // This may happen repeatedly as a type graph is hydrated.
+        _allASTypes.Add(type);
         
         // Replace the base type
         if (replacedType != null)
@@ -50,4 +51,19 @@ internal class CompositeASType
         if (!_replacedASTypes.Contains(type))
             _flatASTypes.Add(type);
     }
+    
+    /// <summary>
+    ///     Adds a collection of type names.
+    ///     These are assumed to to not shadow anything, but may be shadowed by existing types.
+    /// </summary>
+    public void AddRange(IEnumerable<string> asTypes)
+    {
+        foreach (var asType in asTypes)
+        {
+            Add(asType);
+        }
+    }
+    
+    public IEnumerator<string> GetEnumerator() => Types.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

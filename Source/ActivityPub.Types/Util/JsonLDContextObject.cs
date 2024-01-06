@@ -81,18 +81,30 @@ public record JsonLDContextObject
     }
 
     /// <summary>
+    ///     Checks if this context object contains the specified term.
+    ///     Always returns <see langword="false"/> for remote contexts.
+    /// </summary>
+    public bool Contains(JsonLDTerm term)
+        => Terms != null && Terms.TryGetValue(term.Id, out var other) && term.Equals(other);
+
+    /// <summary>
+    ///     Checks if this context object contains any term with the specified ID.
+    ///     Always returns <see langword="false"/> for remote contexts.
+    /// </summary>
+    public bool Contains(string termId)
+        => Terms != null && Terms.ContainsKey(termId);
+    
+    /// <summary>
     ///     Converts a string into a link-form context object
     /// </summary>
     public static implicit operator JsonLDContextObject(string str) => new(str);
 
-    private sealed class TermMap : IEquatable<TermMap>
+    private sealed class TermMap(IReadOnlyDictionary<string, JsonLDTerm> data)
+        : IEquatable<TermMap>
     {
-        private readonly Dictionary<string, JsonLDTerm> _data;
+        private readonly Dictionary<string, JsonLDTerm> _data = new(data);
         public IReadOnlyDictionary<string, JsonLDTerm> Data => _data;
-
-        public TermMap(IReadOnlyDictionary<string, JsonLDTerm> data) => _data = new Dictionary<string, JsonLDTerm>(data);
-
-
+        
         public bool Equals(TermMap? other)
         {
             if (null == other)

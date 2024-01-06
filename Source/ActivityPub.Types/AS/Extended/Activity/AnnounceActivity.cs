@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -15,15 +16,16 @@ public class AnnounceActivity : ASActivity, IASModel<AnnounceActivity, AnnounceA
     /// <summary>
     ///     ActivityStreams type name for "Announce" types.
     /// </summary>
+    [PublicAPI]
     public const string AnnounceType = "Announce";
     static string IASModel<AnnounceActivity>.ASTypeName => AnnounceType;
 
     /// <inheritdoc />
-    public AnnounceActivity() => Entity = TypeMap.Extend<AnnounceActivityEntity>();
+    public AnnounceActivity() => Entity = TypeMap.Extend<AnnounceActivity, AnnounceActivityEntity>();
 
     /// <inheritdoc />
     public AnnounceActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<AnnounceActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<AnnounceActivity, AnnounceActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public AnnounceActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -31,7 +33,7 @@ public class AnnounceActivity : ASActivity, IASModel<AnnounceActivity, AnnounceA
     /// <inheritdoc />
     [SetsRequiredMembers]
     public AnnounceActivity(TypeMap typeMap, AnnounceActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<AnnounceActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<AnnounceActivity, AnnounceActivityEntity>();
 
     static AnnounceActivity IASModel<AnnounceActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -39,4 +41,4 @@ public class AnnounceActivity : ASActivity, IASModel<AnnounceActivity, AnnounceA
 }
 
 /// <inheritdoc cref="AnnounceActivity" />
-public sealed class AnnounceActivityEntity : ASEntity<AnnounceActivity, AnnounceActivityEntity> {}
+public sealed class AnnounceActivityEntity : ASEntity<AnnounceActivity, AnnounceActivityEntity>;

@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -16,15 +17,16 @@ public class ArriveActivity : ASIntransitiveActivity, IASModel<ArriveActivity, A
     /// <summary>
     ///     ActivityStreams type name for "Arrive" types.
     /// </summary>
+    [PublicAPI]
     public const string ArriveType = "Arrive";
     static string IASModel<ArriveActivity>.ASTypeName => ArriveType;
 
     /// <inheritdoc />
-    public ArriveActivity() => Entity = TypeMap.Extend<ArriveActivityEntity>();
+    public ArriveActivity() => Entity = TypeMap.Extend<ArriveActivity, ArriveActivityEntity>();
 
     /// <inheritdoc />
     public ArriveActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<ArriveActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<ArriveActivity, ArriveActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public ArriveActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -32,7 +34,7 @@ public class ArriveActivity : ASIntransitiveActivity, IASModel<ArriveActivity, A
     /// <inheritdoc />
     [SetsRequiredMembers]
     public ArriveActivity(TypeMap typeMap, ArriveActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<ArriveActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<ArriveActivity, ArriveActivityEntity>();
 
     static ArriveActivity IASModel<ArriveActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -40,4 +42,4 @@ public class ArriveActivity : ASIntransitiveActivity, IASModel<ArriveActivity, A
 }
 
 /// <inheritdoc cref="ArriveActivity" />
-public sealed class ArriveActivityEntity : ASEntity<ArriveActivity, ArriveActivityEntity> {}
+public sealed class ArriveActivityEntity : ASEntity<ArriveActivity, ArriveActivityEntity>;

@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -15,15 +16,16 @@ public class OfferActivity : ASActivity, IASModel<OfferActivity, OfferActivityEn
     /// <summary>
     ///     ActivityStreams type name for "Offer" types.
     /// </summary>
+    [PublicAPI]
     public const string OfferType = "Offer";
     static string IASModel<OfferActivity>.ASTypeName => OfferType;
 
     /// <inheritdoc />
-    public OfferActivity() => Entity = TypeMap.Extend<OfferActivityEntity>();
+    public OfferActivity() => Entity = TypeMap.Extend<OfferActivity, OfferActivityEntity>();
 
     /// <inheritdoc />
     public OfferActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<OfferActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<OfferActivity, OfferActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public OfferActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -31,7 +33,7 @@ public class OfferActivity : ASActivity, IASModel<OfferActivity, OfferActivityEn
     /// <inheritdoc />
     [SetsRequiredMembers]
     public OfferActivity(TypeMap typeMap, OfferActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<OfferActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<OfferActivity, OfferActivityEntity>();
 
     static OfferActivity IASModel<OfferActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -39,4 +41,4 @@ public class OfferActivity : ASActivity, IASModel<OfferActivity, OfferActivityEn
 }
 
 /// <inheritdoc cref="OfferActivity" />
-public sealed class OfferActivityEntity : ASEntity<OfferActivity, OfferActivityEntity> {}
+public sealed class OfferActivityEntity : ASEntity<OfferActivity, OfferActivityEntity>;

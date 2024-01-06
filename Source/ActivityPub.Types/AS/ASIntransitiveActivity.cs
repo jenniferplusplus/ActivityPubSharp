@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS;
 
@@ -16,15 +17,16 @@ public class ASIntransitiveActivity : ASActivity, IASModel<ASIntransitiveActivit
     /// <summary>
     ///     ActivityStreams type name for "IntransitiveActivity" types.
     /// </summary>
+    [PublicAPI]
     public const string IntransitiveActivityType = "IntransitiveActivity";
     static string IASModel<ASIntransitiveActivity>.ASTypeName => IntransitiveActivityType;
 
     /// <inheritdoc />
-    public ASIntransitiveActivity() => Entity = TypeMap.Extend<ASIntransitiveActivityEntity>();
+    public ASIntransitiveActivity() => Entity = TypeMap.Extend<ASIntransitiveActivity, ASIntransitiveActivityEntity>();
 
     /// <inheritdoc />
     public ASIntransitiveActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<ASIntransitiveActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<ASIntransitiveActivity, ASIntransitiveActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public ASIntransitiveActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -32,7 +34,7 @@ public class ASIntransitiveActivity : ASActivity, IASModel<ASIntransitiveActivit
     /// <inheritdoc />
     [SetsRequiredMembers]
     public ASIntransitiveActivity(TypeMap typeMap, ASIntransitiveActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<ASIntransitiveActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<ASIntransitiveActivity, ASIntransitiveActivityEntity>();
 
     static ASIntransitiveActivity IASModel<ASIntransitiveActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -40,4 +42,4 @@ public class ASIntransitiveActivity : ASActivity, IASModel<ASIntransitiveActivit
 }
 
 /// <inheritdoc cref="ASIntransitiveActivity" />
-public sealed class ASIntransitiveActivityEntity : ASEntity<ASIntransitiveActivity, ASIntransitiveActivityEntity> {}
+public sealed class ASIntransitiveActivityEntity : ASEntity<ASIntransitiveActivity, ASIntransitiveActivityEntity>;

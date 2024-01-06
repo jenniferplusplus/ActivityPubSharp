@@ -7,9 +7,11 @@ using ActivityPub.Types.Tests.Util.Fixtures;
 
 namespace ActivityPub.Types.Tests.Integration.Deserialization;
 
-public abstract class ExtensionDeserializationTests : DeserializationTests<ASObject>
+public abstract class ExtensionDeserializationTests(JsonLdSerializerFixture fixture)
+    : DeserializationTests<ASObject>(fixture)
 {
-    public class AnonymousExtensionsShould : ExtensionDeserializationTests
+    public class AnonymousExtensionsShould(JsonLdSerializerFixture fixture)
+        : ExtensionDeserializationTests(fixture)
     {
         [Fact]
         public void NotConvert_FromNormalObject()
@@ -46,27 +48,10 @@ public abstract class ExtensionDeserializationTests : DeserializationTests<ASObj
             ObjectUnderTest.As<AnonymousExtensionFake>().ExtendedInt.Should().Be(123);
         }
 
-        [Fact]
-        public void Convert_FromEntitySelector()
-        {
-            SerializerFixture.ConversionOptions.AnonymousEntitySelectors.Add
-            (
-                new AnonymousEntitySelectorFake
-                {
-                    PropertyNameMapping =
-                    {
-                        [nameof(ASActivity.Actor)] = typeof(ASActivityEntity)
-                    }
-                }    
-            );
-            JsonUnderTest = """{"@context":"https://www.w3.org/ns/activitystreams","type":"Object","Actor":{}}""";
-            ObjectUnderTest.Is<ASActivity>().Should().BeTrue();
-        }
-        
-        public AnonymousExtensionsShould(JsonLdSerializerFixture fixture) : base(fixture) {}
     }
 
-    public class NamelessExtensionsShould : ExtensionDeserializationTests
+    public class NamelessExtensionsShould(JsonLdSerializerFixture fixture)
+        : ExtensionDeserializationTests(fixture)
     {
 
         [Fact]
@@ -84,11 +69,11 @@ public abstract class ExtensionDeserializationTests : DeserializationTests<ASObj
             ObjectUnderTest.Is<AnonymousExtensionFake>().Should().BeTrue();
             ObjectUnderTest.As<AnonymousExtensionFake>().ExtendedString.Should().Be("Hello, world!");
         }
-        
-        public NamelessExtensionsShould(JsonLdSerializerFixture fixture) : base(fixture) {}
+
     }
 
-    public class APActorShould : ExtensionDeserializationTests
+    public class APActorShould(JsonLdSerializerFixture fixture)
+        : ExtensionDeserializationTests(fixture)
     {
         
         [Fact]
@@ -121,9 +106,7 @@ public abstract class ExtensionDeserializationTests : DeserializationTests<ASObj
             ObjectUnderTest.As<APActor>().Inbox.HRef.Should().Be("https://example.com/inbox");
             ObjectUnderTest.As<APActor>().Outbox.HRef.Should().Be("https://example.com/outbox");
         }
-        
-        public APActorShould(JsonLdSerializerFixture fixture) : base(fixture) {}
+
     }
 
-    protected ExtensionDeserializationTests(JsonLdSerializerFixture fixture) : base(fixture) {}
 }

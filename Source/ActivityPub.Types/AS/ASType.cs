@@ -27,7 +27,7 @@ public class ASType : IASModel<ASType, ASTypeEntity>
     public ASType()
     {
         TypeMap = new TypeMap();
-        Entity = TypeMap.Extend<ASTypeEntity>();
+        Entity = TypeMap.Extend<ASType, ASTypeEntity>();
     }
 
     /// <summary>
@@ -40,11 +40,11 @@ public class ASType : IASModel<ASType, ASTypeEntity>
     /// <exception cref="InvalidOperationException">If <code>extendGraph</code> is <see langword="true"/> and the entity type already exists in the graph</exception>
     /// <exception cref="InvalidOperationException">If <code>extendGraph</code> is <see langword="true"/> and the entity requires another entity that is missing from the graph</exception>
     /// <exception cref="InvalidCastException">If <code>extendGraph</code> is <see langword="false"/> and the object is not of type <code>TEntity</code></exception>
-    /// <seealso cref="TypeMap.ProjectTo{TEntity}(bool)" />
+    /// <seealso cref="TypeMap.ProjectTo{TModel, TEntity}(bool)" />
     public ASType(TypeMap typeMap, bool isExtending = true)
     {
         TypeMap = typeMap;
-        Entity = TypeMap.ProjectTo<ASTypeEntity>(isExtending);
+        Entity = TypeMap.ProjectTo<ASType, ASTypeEntity>(isExtending);
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public class ASType : IASModel<ASType, ASTypeEntity>
     public ASType(TypeMap typeMap, ASTypeEntity? entity)
     {
         TypeMap = typeMap;
-        Entity = entity ?? typeMap.AsEntity<ASTypeEntity>();
+        Entity = entity ?? typeMap.AsEntity<ASType, ASTypeEntity>();
     }
 
     static ASType IASModel<ASType>.FromGraph(TypeMap typeMap) => new(typeMap, null);
@@ -65,8 +65,17 @@ public class ASType : IASModel<ASType, ASTypeEntity>
     /// <summary>
     ///     Type graph that contains this object.
     /// </summary>
+    [JsonIgnore]
     public TypeMap TypeMap { get; }
 
+    /// <inheritdoc cref="TypeMap.ASTypes"/>
+    [JsonIgnore]
+    public IReadOnlySet<string> Type => TypeMap.ASTypes;
+
+    /// <inheritdoc cref="TypeMap.LDContext"/>
+    [JsonIgnore]
+    public IJsonLDContext JsonLDContext => TypeMap.LDContext;
+    
     /// <summary>
     ///     Provides the globally unique identifier for an <code>Object</code> or <code>Link</code>.
     /// </summary>
@@ -131,7 +140,6 @@ public class ASType : IASModel<ASType, ASTypeEntity>
         set => Entity.MediaType = value;
     }
 
-
     /// <inheritdoc cref="Types.TypeMap.IsModel{TModel}()" />
     public bool Is<TModel>()
         where TModel : ASType, IASModel<TModel>
@@ -176,7 +184,7 @@ public sealed class ASTypeEntity : ASEntity<ASType, ASTypeEntity>
 
     /// <inheritdoc cref="ASType.AttributedTo" />
     [JsonPropertyName("attributedTo")]
-    public LinkableList<ASObject> AttributedTo { get; set; } = new();
+    public LinkableList<ASObject> AttributedTo { get; set; } = [];
 
     /// <inheritdoc cref="ASType.Preview" />
     [JsonPropertyName("preview")]
@@ -191,5 +199,6 @@ public sealed class ASTypeEntity : ASEntity<ASType, ASTypeEntity>
     public string? MediaType { get; set; }
 
     /// <inheritdoc />
+    [JsonIgnore]
     public override bool RequiresObjectForm => Id != null || AttributedTo.Count != 0 || Preview != null || Name != null || MediaType != null;
 }

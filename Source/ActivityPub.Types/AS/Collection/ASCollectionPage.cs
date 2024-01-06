@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using ActivityPub.Types.Util;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Collection;
 
@@ -20,15 +21,16 @@ public class ASCollectionPage : ASCollection, IASModel<ASCollectionPage, ASColle
     /// <summary>
     ///     ActivityStreams type name for "CollectionPage" types.
     /// </summary>
+    [PublicAPI]
     public const string CollectionPageType = "CollectionPage";
     static string IASModel<ASCollectionPage>.ASTypeName => CollectionPageType;
 
     /// <inheritdoc />
-    public ASCollectionPage() => Entity = TypeMap.Extend<ASCollectionPageEntity>();
+    public ASCollectionPage() => Entity = TypeMap.Extend<ASCollectionPage, ASCollectionPageEntity>();
 
     /// <inheritdoc />
     public ASCollectionPage(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<ASCollectionPageEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<ASCollectionPage, ASCollectionPageEntity>(isExtending);
 
     /// <inheritdoc />
     public ASCollectionPage(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -36,7 +38,7 @@ public class ASCollectionPage : ASCollection, IASModel<ASCollectionPage, ASColle
     /// <inheritdoc />
     [SetsRequiredMembers]
     public ASCollectionPage(TypeMap typeMap, ASCollectionPageEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<ASCollectionPageEntity>();
+        => Entity = entity ?? typeMap.AsEntity<ASCollectionPage, ASCollectionPageEntity>();
 
     static ASCollectionPage IASModel<ASCollectionPage>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 

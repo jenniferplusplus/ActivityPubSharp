@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -17,15 +18,16 @@ public class BlockActivity : IgnoreActivity, IASModel<BlockActivity, BlockActivi
     /// <summary>
     ///     ActivityStreams type name for "Block" types.
     /// </summary>
+    [PublicAPI]
     public const string BlockType = "Block";
     static string IASModel<BlockActivity>.ASTypeName => BlockType;
 
     /// <inheritdoc />
-    public BlockActivity() => Entity = TypeMap.Extend<BlockActivityEntity>();
+    public BlockActivity() => Entity = TypeMap.Extend<BlockActivity, BlockActivityEntity>();
 
     /// <inheritdoc />
     public BlockActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<BlockActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<BlockActivity, BlockActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public BlockActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -33,7 +35,7 @@ public class BlockActivity : IgnoreActivity, IASModel<BlockActivity, BlockActivi
     /// <inheritdoc />
     [SetsRequiredMembers]
     public BlockActivity(TypeMap typeMap, BlockActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<BlockActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<BlockActivity, BlockActivityEntity>();
 
     static BlockActivity IASModel<BlockActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -41,4 +43,4 @@ public class BlockActivity : IgnoreActivity, IASModel<BlockActivity, BlockActivi
 }
 
 /// <inheritdoc cref="BlockActivity" />
-public sealed class BlockActivityEntity : ASEntity<BlockActivity, BlockActivityEntity> {}
+public sealed class BlockActivityEntity : ASEntity<BlockActivity, BlockActivityEntity>;

@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -14,15 +15,16 @@ public class ListenActivity : ASActivity, IASModel<ListenActivity, ListenActivit
     /// <summary>
     ///     ActivityStreams type name for "Listen" types.
     /// </summary>
+    [PublicAPI]
     public const string ListenType = "Listen";
     static string IASModel<ListenActivity>.ASTypeName => ListenType;
 
     /// <inheritdoc />
-    public ListenActivity() => Entity = TypeMap.Extend<ListenActivityEntity>();
+    public ListenActivity() => Entity = TypeMap.Extend<ListenActivity, ListenActivityEntity>();
 
     /// <inheritdoc />
     public ListenActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<ListenActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<ListenActivity, ListenActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public ListenActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -30,7 +32,7 @@ public class ListenActivity : ASActivity, IASModel<ListenActivity, ListenActivit
     /// <inheritdoc />
     [SetsRequiredMembers]
     public ListenActivity(TypeMap typeMap, ListenActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<ListenActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<ListenActivity, ListenActivityEntity>();
 
     static ListenActivity IASModel<ListenActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -38,4 +40,4 @@ public class ListenActivity : ASActivity, IASModel<ListenActivity, ListenActivit
 }
 
 /// <inheritdoc cref="ListenActivity" />
-public sealed class ListenActivityEntity : ASEntity<ListenActivity, ListenActivityEntity> {}
+public sealed class ListenActivityEntity : ASEntity<ListenActivity, ListenActivityEntity>;

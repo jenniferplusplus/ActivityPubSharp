@@ -6,7 +6,7 @@ using ActivityPub.Types.Util;
 
 namespace ActivityPub.Types.Tests.Unit.Conversion.Converters;
 
-internal class JsonLDContextConverterTests : JsonConverterTests<JsonLDContext, JsonLDContextConverter>
+public class JsonLDContextConverterTests : JsonConverterTests<JsonLDContext, JsonLDContextConverter>
 {
     protected override JsonLDContextConverter ConverterUnderTest { get; set; } = new();
 
@@ -96,12 +96,10 @@ internal class JsonLDContextConverterTests : JsonConverterTests<JsonLDContext, J
         [Fact]
         public void WriteSingleDirectly()
         {
-            var input = new JsonLDContext(
-                new HashSet<JsonLDContextObject>
-                {
-                    new("https://example.com/context.jsonld")
-                }
-            );
+            var input = new JsonLDContext
+            {
+                "https://example.com/context.jsonld"
+            };
 
             var json = Write(input);
 
@@ -111,17 +109,32 @@ internal class JsonLDContextConverterTests : JsonConverterTests<JsonLDContext, J
         [Fact]
         public void WriteMultiAsArray()
         {
-            var input = new JsonLDContext(
-                new HashSet<JsonLDContextObject>
-                {
-                    new("https://example.com/first.jsonld"),
-                    new("https://example.com/second.jsonld")
-                }
-            );
+            var input = new JsonLDContext
+            {
+                "https://example.com/first.jsonld",
+                "https://example.com/second.jsonld"
+            };
 
             var json = Write(input);
 
             json.Should().Be("[\"https://example.com/first.jsonld\",\"https://example.com/second.jsonld\"]");
+        }
+
+        [Fact]
+        public void WriteOnlyLocalContexts()
+        {
+            var parent = new JsonLDContext()
+            {
+                "https://example.com/parent.jsonld",
+            };
+            var input = new JsonLDContext(parent)
+            {
+                "https://example.com/child.jsonld",
+            };
+
+            var json = Write(input);
+
+            json.Should().Be("\"https://example.com/child.jsonld\"");
         }
     }
 }

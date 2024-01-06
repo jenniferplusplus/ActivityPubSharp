@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using ActivityPub.Types.Util;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Collection;
 
@@ -20,15 +21,16 @@ public class ASOrderedCollectionPage : ASOrderedCollection, IASModel<ASOrderedCo
     /// <summary>
     ///     ActivityStreams type name for "OrderedCollectionPage" types.
     /// </summary>
+    [PublicAPI]
     public const string OrderedCollectionPageType = "OrderedCollectionPage";
     static string IASModel<ASOrderedCollectionPage>.ASTypeName => OrderedCollectionPageType;
 
     /// <inheritdoc />
-    public ASOrderedCollectionPage() => Entity = TypeMap.Extend<ASOrderedCollectionPageEntity>();
+    public ASOrderedCollectionPage() => Entity = TypeMap.Extend<ASOrderedCollectionPage, ASOrderedCollectionPageEntity>();
 
     /// <inheritdoc />
     public ASOrderedCollectionPage(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<ASOrderedCollectionPageEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<ASOrderedCollectionPage, ASOrderedCollectionPageEntity>(isExtending);
 
     /// <inheritdoc />
     public ASOrderedCollectionPage(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -36,7 +38,7 @@ public class ASOrderedCollectionPage : ASOrderedCollection, IASModel<ASOrderedCo
     /// <inheritdoc />
     [SetsRequiredMembers]
     public ASOrderedCollectionPage(TypeMap typeMap, ASOrderedCollectionPageEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<ASOrderedCollectionPageEntity>();
+        => Entity = entity ?? typeMap.AsEntity<ASOrderedCollectionPage, ASOrderedCollectionPageEntity>();
 
     static ASOrderedCollectionPage IASModel<ASOrderedCollectionPage>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 

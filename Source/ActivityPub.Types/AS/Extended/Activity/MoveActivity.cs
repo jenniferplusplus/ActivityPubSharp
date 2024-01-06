@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -15,15 +16,16 @@ public class MoveActivity : ASActivity, IASModel<MoveActivity, MoveActivityEntit
     /// <summary>
     ///     ActivityStreams type name for "Move" types.
     /// </summary>
+    [PublicAPI]
     public const string MoveType = "Move";
     static string IASModel<MoveActivity>.ASTypeName => MoveType;
 
     /// <inheritdoc />
-    public MoveActivity() => Entity = TypeMap.Extend<MoveActivityEntity>();
+    public MoveActivity() => Entity = TypeMap.Extend<MoveActivity, MoveActivityEntity>();
 
     /// <inheritdoc />
     public MoveActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<MoveActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<MoveActivity, MoveActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public MoveActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -31,7 +33,7 @@ public class MoveActivity : ASActivity, IASModel<MoveActivity, MoveActivityEntit
     /// <inheritdoc />
     [SetsRequiredMembers]
     public MoveActivity(TypeMap typeMap, MoveActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<MoveActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<MoveActivity, MoveActivityEntity>();
 
     static MoveActivity IASModel<MoveActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -39,4 +41,4 @@ public class MoveActivity : ASActivity, IASModel<MoveActivity, MoveActivityEntit
 }
 
 /// <inheritdoc cref="MoveActivity" />
-public sealed class MoveActivityEntity : ASEntity<MoveActivity, MoveActivityEntity> {}
+public sealed class MoveActivityEntity : ASEntity<MoveActivity, MoveActivityEntity>;

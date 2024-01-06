@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -16,15 +17,16 @@ public class FollowActivity : ASActivity, IASModel<FollowActivity, FollowActivit
     /// <summary>
     ///     ActivityStreams type name for "Follow" types.
     /// </summary>
+    [PublicAPI]
     public const string FollowType = "Follow";
     static string IASModel<FollowActivity>.ASTypeName => FollowType;
 
     /// <inheritdoc />
-    public FollowActivity() => Entity = TypeMap.Extend<FollowActivityEntity>();
+    public FollowActivity() => Entity = TypeMap.Extend<FollowActivity, FollowActivityEntity>();
 
     /// <inheritdoc />
     public FollowActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<FollowActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<FollowActivity, FollowActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public FollowActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -32,7 +34,7 @@ public class FollowActivity : ASActivity, IASModel<FollowActivity, FollowActivit
     /// <inheritdoc />
     [SetsRequiredMembers]
     public FollowActivity(TypeMap typeMap, FollowActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<FollowActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<FollowActivity, FollowActivityEntity>();
 
     static FollowActivity IASModel<FollowActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -40,4 +42,4 @@ public class FollowActivity : ASActivity, IASModel<FollowActivity, FollowActivit
 }
 
 /// <inheritdoc cref="FollowActivity" />
-public sealed class FollowActivityEntity : ASEntity<FollowActivity, FollowActivityEntity> {}
+public sealed class FollowActivityEntity : ASEntity<FollowActivity, FollowActivityEntity>;

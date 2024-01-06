@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Object;
 
@@ -14,15 +15,16 @@ public class ImageObject : DocumentObject, IASModel<ImageObject, ImageObjectEnti
     /// <summary>
     ///     ActivityStreams type name for "Image" types.
     /// </summary>
+    [PublicAPI]
     public const string ImageType = "Image";
     static string IASModel<ImageObject>.ASTypeName => ImageType;
 
     /// <inheritdoc />
-    public ImageObject() => Entity = TypeMap.Extend<ImageObjectEntity>();
+    public ImageObject() => Entity = TypeMap.Extend<ImageObject, ImageObjectEntity>();
 
     /// <inheritdoc />
     public ImageObject(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<ImageObjectEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<ImageObject, ImageObjectEntity>(isExtending);
 
     /// <inheritdoc />
     public ImageObject(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -30,7 +32,7 @@ public class ImageObject : DocumentObject, IASModel<ImageObject, ImageObjectEnti
     /// <inheritdoc />
     [SetsRequiredMembers]
     public ImageObject(TypeMap typeMap, ImageObjectEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<ImageObjectEntity>();
+        => Entity = entity ?? typeMap.AsEntity<ImageObject, ImageObjectEntity>();
 
     static ImageObject IASModel<ImageObject>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -39,4 +41,4 @@ public class ImageObject : DocumentObject, IASModel<ImageObject, ImageObjectEnti
 }
 
 /// <inheritdoc cref="ImageObject" />
-public sealed class ImageObjectEntity : ASEntity<ImageObject, ImageObjectEntity> {}
+public sealed class ImageObjectEntity : ASEntity<ImageObject, ImageObjectEntity>;

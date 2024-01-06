@@ -3,6 +3,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Object;
 
@@ -14,15 +15,16 @@ public class PlaceObject : ASObject, IASModel<PlaceObject, PlaceObjectEntity, AS
     /// <summary>
     ///     ActivityStreams type name for "Place" types.
     /// </summary>
+    [PublicAPI]
     public const string PlaceType = "Place";
     static string IASModel<PlaceObject>.ASTypeName => PlaceType;
 
     /// <inheritdoc />
-    public PlaceObject() => Entity = TypeMap.Extend<PlaceObjectEntity>();
+    public PlaceObject() => Entity = TypeMap.Extend<PlaceObject, PlaceObjectEntity>();
 
     /// <inheritdoc />
     public PlaceObject(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<PlaceObjectEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<PlaceObject, PlaceObjectEntity>(isExtending);
 
     /// <inheritdoc />
     public PlaceObject(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -30,7 +32,7 @@ public class PlaceObject : ASObject, IASModel<PlaceObject, PlaceObjectEntity, AS
     /// <inheritdoc />
     [SetsRequiredMembers]
     public PlaceObject(TypeMap typeMap, PlaceObjectEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<PlaceObjectEntity>();
+        => Entity = entity ?? typeMap.AsEntity<PlaceObject, PlaceObjectEntity>();
 
     static PlaceObject IASModel<PlaceObject>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 

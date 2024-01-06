@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -15,15 +16,16 @@ public class LeaveActivity : ASActivity, IASModel<LeaveActivity, LeaveActivityEn
     /// <summary>
     ///     ActivityStreams type name for "Leave" types.
     /// </summary>
+    [PublicAPI]
     public const string LeaveType = "Leave";
     static string IASModel<LeaveActivity>.ASTypeName => LeaveType;
 
     /// <inheritdoc />
-    public LeaveActivity() => Entity = TypeMap.Extend<LeaveActivityEntity>();
+    public LeaveActivity() => Entity = TypeMap.Extend<LeaveActivity, LeaveActivityEntity>();
 
     /// <inheritdoc />
     public LeaveActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<LeaveActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<LeaveActivity, LeaveActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public LeaveActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -31,7 +33,7 @@ public class LeaveActivity : ASActivity, IASModel<LeaveActivity, LeaveActivityEn
     /// <inheritdoc />
     [SetsRequiredMembers]
     public LeaveActivity(TypeMap typeMap, LeaveActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<LeaveActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<LeaveActivity, LeaveActivityEntity>();
 
     static LeaveActivity IASModel<LeaveActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -39,4 +41,4 @@ public class LeaveActivity : ASActivity, IASModel<LeaveActivity, LeaveActivityEn
 }
 
 /// <inheritdoc cref="LeaveActivity" />
-public sealed class LeaveActivityEntity : ASEntity<LeaveActivity, LeaveActivityEntity> {}
+public sealed class LeaveActivityEntity : ASEntity<LeaveActivity, LeaveActivityEntity>;

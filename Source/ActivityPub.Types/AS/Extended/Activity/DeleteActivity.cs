@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -15,15 +16,16 @@ public class DeleteActivity : ASActivity, IASModel<DeleteActivity, DeleteActivit
     /// <summary>
     ///     ActivityStreams type name for "Delete" types.
     /// </summary>
+    [PublicAPI]
     public const string DeleteType = "Delete";
     static string IASModel<DeleteActivity>.ASTypeName => DeleteType;
 
     /// <inheritdoc />
-    public DeleteActivity() => Entity = TypeMap.Extend<DeleteActivityEntity>();
+    public DeleteActivity() => Entity = TypeMap.Extend<DeleteActivity, DeleteActivityEntity>();
 
     /// <inheritdoc />
     public DeleteActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<DeleteActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<DeleteActivity, DeleteActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public DeleteActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -31,7 +33,7 @@ public class DeleteActivity : ASActivity, IASModel<DeleteActivity, DeleteActivit
     /// <inheritdoc />
     [SetsRequiredMembers]
     public DeleteActivity(TypeMap typeMap, DeleteActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<DeleteActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<DeleteActivity, DeleteActivityEntity>();
 
     static DeleteActivity IASModel<DeleteActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -39,4 +41,4 @@ public class DeleteActivity : ASActivity, IASModel<DeleteActivity, DeleteActivit
 }
 
 /// <inheritdoc cref="DeleteActivity" />
-public sealed class DeleteActivityEntity : ASEntity<DeleteActivity, DeleteActivityEntity> {}
+public sealed class DeleteActivityEntity : ASEntity<DeleteActivity, DeleteActivityEntity>;

@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Actor;
 
@@ -14,15 +15,16 @@ public class ApplicationActor : APActor, IASModel<ApplicationActor, ApplicationA
     /// <summary>
     ///     ActivityStreams type name for "Application" types.
     /// </summary>
+    [PublicAPI]
     public const string ApplicationType = "Application";
     static string IASModel<ApplicationActor>.ASTypeName => ApplicationType;
 
     /// <inheritdoc />
-    public ApplicationActor() => Entity = TypeMap.Extend<ApplicationActorEntity>();
+    public ApplicationActor() => Entity = TypeMap.Extend<ApplicationActor, ApplicationActorEntity>();
 
     /// <inheritdoc />
     public ApplicationActor(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<ApplicationActorEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<ApplicationActor, ApplicationActorEntity>(isExtending);
 
     /// <inheritdoc />
     public ApplicationActor(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -30,7 +32,7 @@ public class ApplicationActor : APActor, IASModel<ApplicationActor, ApplicationA
     /// <inheritdoc />
     [SetsRequiredMembers]
     public ApplicationActor(TypeMap typeMap, ApplicationActorEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<ApplicationActorEntity>();
+        => Entity = entity ?? typeMap.AsEntity<ApplicationActor, ApplicationActorEntity>();
 
     static ApplicationActor IASModel<ApplicationActor>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -38,4 +40,4 @@ public class ApplicationActor : APActor, IASModel<ApplicationActor, ApplicationA
 }
 
 /// <inheritdoc cref="ApplicationActor" />
-public sealed class ApplicationActorEntity : ASEntity<ApplicationActor, ApplicationActorEntity> {}
+public sealed class ApplicationActorEntity : ASEntity<ApplicationActor, ApplicationActorEntity>;

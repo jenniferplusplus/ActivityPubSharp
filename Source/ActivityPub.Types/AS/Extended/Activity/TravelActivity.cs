@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -16,15 +17,16 @@ public class TravelActivity : ASIntransitiveActivity, IASModel<TravelActivity, T
     /// <summary>
     ///     ActivityStreams type name for "Travel" types.
     /// </summary>
+    [PublicAPI]
     public const string TravelType = "Travel";
     static string IASModel<TravelActivity>.ASTypeName => TravelType;
 
     /// <inheritdoc />
-    public TravelActivity() => Entity = TypeMap.Extend<TravelActivityEntity>();
+    public TravelActivity() => Entity = TypeMap.Extend<TravelActivity, TravelActivityEntity>();
 
     /// <inheritdoc />
     public TravelActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<TravelActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<TravelActivity, TravelActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public TravelActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -32,7 +34,7 @@ public class TravelActivity : ASIntransitiveActivity, IASModel<TravelActivity, T
     /// <inheritdoc />
     [SetsRequiredMembers]
     public TravelActivity(TypeMap typeMap, TravelActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<TravelActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<TravelActivity, TravelActivityEntity>();
 
     static TravelActivity IASModel<TravelActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -40,4 +42,4 @@ public class TravelActivity : ASIntransitiveActivity, IASModel<TravelActivity, T
 }
 
 /// <inheritdoc cref="TravelActivity" />
-public sealed class TravelActivityEntity : ASEntity<TravelActivity, TravelActivityEntity> {}
+public sealed class TravelActivityEntity : ASEntity<TravelActivity, TravelActivityEntity>;

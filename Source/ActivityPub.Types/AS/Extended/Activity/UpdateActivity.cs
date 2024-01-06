@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -16,15 +17,16 @@ public class UpdateActivity : ASActivity, IASModel<UpdateActivity, UpdateActivit
     /// <summary>
     ///     ActivityStreams type name for "Update" types.
     /// </summary>
+    [PublicAPI]
     public const string UpdateType = "Update";
     static string IASModel<UpdateActivity>.ASTypeName => UpdateType;
 
     /// <inheritdoc />
-    public UpdateActivity() => Entity = TypeMap.Extend<UpdateActivityEntity>();
+    public UpdateActivity() => Entity = TypeMap.Extend<UpdateActivity, UpdateActivityEntity>();
 
     /// <inheritdoc />
     public UpdateActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<UpdateActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<UpdateActivity, UpdateActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public UpdateActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -32,7 +34,7 @@ public class UpdateActivity : ASActivity, IASModel<UpdateActivity, UpdateActivit
     /// <inheritdoc />
     [SetsRequiredMembers]
     public UpdateActivity(TypeMap typeMap, UpdateActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<UpdateActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<UpdateActivity, UpdateActivityEntity>();
 
     static UpdateActivity IASModel<UpdateActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -40,4 +42,4 @@ public class UpdateActivity : ASActivity, IASModel<UpdateActivity, UpdateActivit
 }
 
 /// <inheritdoc cref="UpdateActivity" />
-public sealed class UpdateActivityEntity : ASEntity<UpdateActivity, UpdateActivityEntity> {}
+public sealed class UpdateActivityEntity : ASEntity<UpdateActivity, UpdateActivityEntity>;

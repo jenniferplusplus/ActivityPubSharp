@@ -7,13 +7,12 @@ using ActivityPub.Types.AS;
 using ActivityPub.Types.AS.Collection;
 using ActivityPub.Types.AS.Extended.Object;
 using ActivityPub.Types.Tests.Util.Fixtures;
-using ActivityPub.Types.Util;
 
 namespace ActivityPub.Types.Tests.Integration.Serialization;
 
-public class ValueStripSerializationTests : SerializationTests
+public class ValueStripSerializationTests(JsonLdSerializerFixture fixture)
+    : SerializationTests(fixture)
 {
-    public ValueStripSerializationTests(JsonLdSerializerFixture fixture) : base(fixture) {}
 
     [Fact]
     public void NullObjectsShould_BeStrippedFromOutput()
@@ -52,7 +51,7 @@ public class ValueStripSerializationTests : SerializationTests
     {
         ObjectUnderTest = new ASObject
         {
-            Attachment = new LinkableList<ASObject>()
+            Attachment = []
         };
 
         JsonUnderTest.Should().NotHaveProperty("attachment");
@@ -103,10 +102,7 @@ public class ValueStripSerializationTests : SerializationTests
     {
         ObjectUnderTest = new ASObject
         {
-            Attachment = new LinkableList<ASObject>
-            {
-                new ASObject()
-            }
+            Attachment = [new ASObject()]
         };
 
         JsonUnderTest.Should().HaveProperty("attachment");
@@ -122,11 +118,11 @@ public class FakeObjectWithSpecialNullability : ASObject, IASModel<FakeObjectWit
     static string IASModel<FakeObjectWithSpecialNullability>.ASTypeName => FakeObjectWithSpecialNullabilityType;
 
     /// <inheritdoc />
-    public FakeObjectWithSpecialNullability() => Entity = TypeMap.Extend<FakeObjectWithSpecialNullabilityEntity>();
+    public FakeObjectWithSpecialNullability() => Entity = TypeMap.Extend<FakeObjectWithSpecialNullability, FakeObjectWithSpecialNullabilityEntity>();
 
     /// <inheritdoc />
     public FakeObjectWithSpecialNullability(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<FakeObjectWithSpecialNullabilityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<FakeObjectWithSpecialNullability, FakeObjectWithSpecialNullabilityEntity>(isExtending);
 
     /// <inheritdoc />
     public FakeObjectWithSpecialNullability(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -134,7 +130,7 @@ public class FakeObjectWithSpecialNullability : ASObject, IASModel<FakeObjectWit
     /// <inheritdoc />
     [SetsRequiredMembers]
     public FakeObjectWithSpecialNullability(TypeMap typeMap, FakeObjectWithSpecialNullabilityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<FakeObjectWithSpecialNullabilityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<FakeObjectWithSpecialNullability, FakeObjectWithSpecialNullabilityEntity>();
 
     static FakeObjectWithSpecialNullability IASModel<FakeObjectWithSpecialNullability>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -176,7 +172,7 @@ public sealed class FakeObjectWithSpecialNullabilityEntity : ASEntity<FakeObject
     public int NeverIgnoreInt { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public List<string> NeverIgnoreList { get; set; } = new();
+    public List<string> NeverIgnoreList { get; set; } = [];
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public int IgnoreWhenDefaultInt { get; set; }

@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -15,15 +16,16 @@ public class RejectActivity : ASActivity, IASModel<RejectActivity, RejectActivit
     /// <summary>
     ///     ActivityStreams type name for "Reject" types.
     /// </summary>
+    [PublicAPI]
     public const string RejectType = "Reject";
     static string IASModel<RejectActivity>.ASTypeName => RejectType;
 
     /// <inheritdoc />
-    public RejectActivity() => Entity = TypeMap.Extend<RejectActivityEntity>();
+    public RejectActivity() => Entity = TypeMap.Extend<RejectActivity, RejectActivityEntity>();
 
     /// <inheritdoc />
     public RejectActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<RejectActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<RejectActivity, RejectActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public RejectActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -31,7 +33,7 @@ public class RejectActivity : ASActivity, IASModel<RejectActivity, RejectActivit
     /// <inheritdoc />
     [SetsRequiredMembers]
     public RejectActivity(TypeMap typeMap, RejectActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<RejectActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<RejectActivity, RejectActivityEntity>();
 
     static RejectActivity IASModel<RejectActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -39,4 +41,4 @@ public class RejectActivity : ASActivity, IASModel<RejectActivity, RejectActivit
 }
 
 /// <inheritdoc cref="RejectActivity" />
-public sealed class RejectActivityEntity : ASEntity<RejectActivity, RejectActivityEntity> {}
+public sealed class RejectActivityEntity : ASEntity<RejectActivity, RejectActivityEntity>;

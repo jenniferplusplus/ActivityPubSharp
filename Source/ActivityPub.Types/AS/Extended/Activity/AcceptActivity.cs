@@ -2,6 +2,7 @@
 // If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -14,15 +15,16 @@ public class AcceptActivity : ASActivity, IASModel<AcceptActivity, AcceptActivit
     /// <summary>
     ///     ActivityStreams type name for "Accept" types.
     /// </summary>
+    [PublicAPI]
     public const string AcceptType = "Accept";
     static string IASModel<AcceptActivity>.ASTypeName => AcceptType;
 
     /// <inheritdoc />
-    public AcceptActivity() => Entity = TypeMap.Extend<AcceptActivityEntity>();
+    public AcceptActivity() => Entity = TypeMap.Extend<AcceptActivity, AcceptActivityEntity>();
 
     /// <inheritdoc />
     public AcceptActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<AcceptActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<AcceptActivity, AcceptActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public AcceptActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -30,7 +32,7 @@ public class AcceptActivity : ASActivity, IASModel<AcceptActivity, AcceptActivit
     /// <inheritdoc />
     [SetsRequiredMembers]
     public AcceptActivity(TypeMap typeMap, AcceptActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<AcceptActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<AcceptActivity, AcceptActivityEntity>();
 
     static AcceptActivity IASModel<AcceptActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -38,4 +40,4 @@ public class AcceptActivity : ASActivity, IASModel<AcceptActivity, AcceptActivit
 }
 
 /// <inheritdoc cref="AcceptActivity" />
-public sealed class AcceptActivityEntity : ASEntity<AcceptActivity, AcceptActivityEntity> {}
+public sealed class AcceptActivityEntity : ASEntity<AcceptActivity, AcceptActivityEntity>;

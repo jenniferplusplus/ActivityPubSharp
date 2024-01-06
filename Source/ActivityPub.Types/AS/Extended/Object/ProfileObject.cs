@@ -3,6 +3,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Object;
 
@@ -15,15 +16,16 @@ public class ProfileObject : ASObject, IASModel<ProfileObject, ProfileObjectEnti
     /// <summary>
     ///     ActivityStreams type name for "Profile" types.
     /// </summary>
+    [PublicAPI]
     public const string ProfileType = "Profile";
     static string IASModel<ProfileObject>.ASTypeName => ProfileType;
 
     /// <inheritdoc />
-    public ProfileObject() => Entity = TypeMap.Extend<ProfileObjectEntity>();
+    public ProfileObject() => Entity = TypeMap.Extend<ProfileObject, ProfileObjectEntity>();
 
     /// <inheritdoc />
     public ProfileObject(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<ProfileObjectEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<ProfileObject, ProfileObjectEntity>(isExtending);
 
     /// <inheritdoc />
     public ProfileObject(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -31,7 +33,7 @@ public class ProfileObject : ASObject, IASModel<ProfileObject, ProfileObjectEnti
     /// <inheritdoc />
     [SetsRequiredMembers]
     public ProfileObject(TypeMap typeMap, ProfileObjectEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<ProfileObjectEntity>();
+        => Entity = entity ?? typeMap.AsEntity<ProfileObject, ProfileObjectEntity>();
 
     static ProfileObject IASModel<ProfileObject>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 

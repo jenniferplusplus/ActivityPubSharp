@@ -3,6 +3,7 @@
 
 
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Activity;
 
@@ -15,15 +16,16 @@ public class FlagActivity : ASActivity, IASModel<FlagActivity, FlagActivityEntit
     /// <summary>
     ///     ActivityStreams type name for "Flag" types.
     /// </summary>
+    [PublicAPI]
     public const string FlagType = "Flag";
     static string IASModel<FlagActivity>.ASTypeName => FlagType;
 
     /// <inheritdoc />
-    public FlagActivity() => Entity = TypeMap.Extend<FlagActivityEntity>();
+    public FlagActivity() => Entity = TypeMap.Extend<FlagActivity, FlagActivityEntity>();
 
     /// <inheritdoc />
     public FlagActivity(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<FlagActivityEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<FlagActivity, FlagActivityEntity>(isExtending);
 
     /// <inheritdoc />
     public FlagActivity(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -31,7 +33,7 @@ public class FlagActivity : ASActivity, IASModel<FlagActivity, FlagActivityEntit
     /// <inheritdoc />
     [SetsRequiredMembers]
     public FlagActivity(TypeMap typeMap, FlagActivityEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<FlagActivityEntity>();
+        => Entity = entity ?? typeMap.AsEntity<FlagActivity, FlagActivityEntity>();
 
     static FlagActivity IASModel<FlagActivity>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -39,4 +41,4 @@ public class FlagActivity : ASActivity, IASModel<FlagActivity, FlagActivityEntit
 }
 
 /// <inheritdoc cref="FlagActivity" />
-public sealed class FlagActivityEntity : ASEntity<FlagActivity, FlagActivityEntity> {}
+public sealed class FlagActivityEntity : ASEntity<FlagActivity, FlagActivityEntity>;

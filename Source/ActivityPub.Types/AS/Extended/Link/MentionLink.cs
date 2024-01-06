@@ -3,6 +3,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using ActivityPub.Types.Util;
+using JetBrains.Annotations;
 
 namespace ActivityPub.Types.AS.Extended.Link;
 
@@ -14,15 +15,16 @@ public class MentionLink : ASLink, IASModel<MentionLink, MentionLinkEntity, ASLi
     /// <summary>
     ///     ActivityStreams type name for "Mention" types.
     /// </summary>
+    [PublicAPI]
     public const string MentionType = "Mention";
     static string IASModel<MentionLink>.ASTypeName => MentionType;
 
     /// <inheritdoc />
-    public MentionLink() => Entity = TypeMap.Extend<MentionLinkEntity>();
+    public MentionLink() => Entity = TypeMap.Extend<MentionLink, MentionLinkEntity>();
 
     /// <inheritdoc />
     public MentionLink(TypeMap typeMap, bool isExtending = true) : base(typeMap, false)
-        => Entity = TypeMap.ProjectTo<MentionLinkEntity>(isExtending);
+        => Entity = TypeMap.ProjectTo<MentionLink, MentionLinkEntity>(isExtending);
 
     /// <inheritdoc />
     public MentionLink(ASType existingGraph) : this(existingGraph.TypeMap) {}
@@ -30,7 +32,7 @@ public class MentionLink : ASLink, IASModel<MentionLink, MentionLinkEntity, ASLi
     /// <inheritdoc />
     [SetsRequiredMembers]
     public MentionLink(TypeMap typeMap, MentionLinkEntity? entity) : base(typeMap, null)
-        => Entity = entity ?? typeMap.AsEntity<MentionLinkEntity>();
+        => Entity = entity ?? typeMap.AsEntity<MentionLink, MentionLinkEntity>();
 
     static MentionLink IASModel<MentionLink>.FromGraph(TypeMap typeMap) => new(typeMap, null);
 
@@ -73,4 +75,4 @@ public class MentionLink : ASLink, IASModel<MentionLink, MentionLinkEntity, ASLi
 /// <summary>
 ///     A specialized Link that represents an @mention.
 /// </summary>
-public sealed class MentionLinkEntity : ASEntity<MentionLink, MentionLinkEntity> {}
+public sealed class MentionLinkEntity : ASEntity<MentionLink, MentionLinkEntity>;
